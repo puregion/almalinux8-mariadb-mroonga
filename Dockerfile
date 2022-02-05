@@ -27,8 +27,6 @@ RUN yum -y install initscripts \
     && sudo dnf install -y --enablerepo=epel mariadb-10.6-mroonga \
     && dnf clean all
 
-
-
 VOLUME /var/lib/mysql
 
 COPY docker-entrypoint.sh /
