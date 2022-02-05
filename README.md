@@ -1,5 +1,5 @@
-# mariadb-mroonga
-
+# AlmaLinux 8 mariadb-mroonga
+https://mroonga.org/docs/install/almalinux.html#almalinux-8-with-mariadb-10-6-package
 ## Quick Start
 
     $ sudo docker build -t REPOSITORY .
@@ -12,4 +12,4 @@
 
 | MariaDB | Groonga | Mroonga |
 |---------|---------|---------|
-| 10.5.10 | 11.0.2  | 11.02   |
+| 10.6    | 11.3    | 11.3    |
