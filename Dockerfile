@@ -1,34 +1,37 @@
-FROM centos:8
+FROM almalinux:8
+MAINTAINER Zhenyu Li <puregion@qq.com>
 
-ARG mariadb_version="10.5.10"
-ARG groonga_version="11.0.2"
-ARG mroonga_version="11.02"
+ENV MARIADB_MAJOR 10.6
+ENV MARIADB_VERSION 10.6.5
+ENV MYSQL_ROOT_PASSWORD mysecretpassword
+ENV MYSQL_DATADIR /var/lib/mysql
 
 COPY MariaDB.repo /etc/yum.repos.d/
 RUN mkdir /var/lib/mysql \
-    && rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official \
-    && rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8 \
-    && rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB \
-    && rpm --import https://packages.groonga.org/centos/RPM-GPG-KEY-groonga \
-    && dnf upgrade -y \
-    && dnf install -y https://packages.groonga.org/centos/groonga-release-latest.noarch.rpm \
-    && dnf install -y --enablerepo=powertools which MariaDB-server-${mariadb_version} MariaDB-client-${mariadb_version} groonga-${groonga_version} groonga-tokenizer-mecab-${groonga_version} mariadb-10.5-mroonga-${mroonga_version} \
-    && dnf clean all \
-    && rm -rf /var/lib/mysql
+    && mkdir -p /var/log/mysql \
+    && chown mysql:mysql /var/log/mysql \
+    && yum -y update \
+    &&yum clean all
+# Install requirements.
+RUN yum -y install initscripts \
+ && yum -y update \
+ && yum -y dnf \
+      sudo \
+      systemctl \
+ && yum clean all
 
-RUN gpg --batch --keyserver keys.gnupg.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-    && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-amd64" \
-    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-amd64.asc" \
-    && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
-    && rm /usr/local/bin/gosu.asc \
-    && rm -rf /root/.gnupg/ \
-    && chmod +x /usr/local/bin/gosu
+    && sudo dnf install -y https://packages.groonga.org/almalinux/8/groonga-release-latest.noarch.rpm \
+    && sudo dnf install -y boost-program-options \
+    && sudo dnf install --disablerepo=AppStream -y MariaDB-server \
+    && sudo systemctl start mariadb \
+    && sudo dnf install -y --enablerepo=epel mariadb-10.6-mroonga \
+    && dnf clean all
+
+
 
 VOLUME /var/lib/mysql
 
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
-RUN chmod +rx /usr/local/bin/docker-entrypoint.sh
+COPY docker-entrypoint.sh /
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 3306
