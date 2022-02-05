@@ -18,14 +18,13 @@ RUN yum -y install initscripts \
  && yum -y dnf \
       sudo \
       systemctl \
- && yum clean all
-
-    && sudo dnf install -y https://packages.groonga.org/almalinux/8/groonga-release-latest.noarch.rpm \
-    && sudo dnf install -y boost-program-options \
-    && sudo dnf install --disablerepo=AppStream -y MariaDB-server \
-    && sudo systemctl start mariadb \
-    && sudo dnf install -y --enablerepo=epel mariadb-10.6-mroonga \
-    && dnf clean all
+ && yum clean all \
+ && sudo dnf install -y https://packages.groonga.org/almalinux/8/groonga-release-latest.noarch.rpm \
+ && sudo dnf install -y boost-program-options \
+ && sudo dnf install --disablerepo=AppStream -y MariaDB-server \
+ && sudo systemctl start mariadb \
+ && sudo dnf install -y --enablerepo=epel mariadb-10.6-mroonga \
+ && dnf clean all
 
 VOLUME /var/lib/mysql
 
