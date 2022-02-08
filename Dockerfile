@@ -22,7 +22,6 @@ RUN yum -y install dnf \
  && sudo dnf install -y boost-program-options \
  && sudo dnf install -y MariaDB-server --disablerepo=appstream \
  && sudo dnf install -y --enablerepo=epel mariadb-10.6-mroonga \
- && yum clean all \
  && dnf clean all \
  && chown mysql:mysql /var/log/mysql
 
